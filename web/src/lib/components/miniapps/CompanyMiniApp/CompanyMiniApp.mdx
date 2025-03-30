@@ -1,0 +1,74 @@
+import { Meta, Story, Canvas, Controls, Primary } from '@storybook/blocks';
+import * as CompanyMiniAppStories from './CompanyMiniApp.stories.svelte';
+
+<Meta of={CompanyMiniAppStories} />
+
+# CompanyMiniApp
+
+O CompanyMiniApp é o componente principal para exibir informações e funcionalidades relacionadas a uma empresa específica.
+
+## Características
+
+- Exibe informações básicas da empresa
+- Navegação por abas (Visão Geral, Análises, Configurações)
+- Suporte a tema claro/escuro
+- Layout responsivo
+
+## Uso Básico
+
+<Primary />
+
+## Propriedades
+
+<Controls />
+
+## Variantes
+
+### Padrão
+
+<Canvas>
+  <Story id="miniapps-companyminiapp--padrão" />
+</Canvas>
+
+### Terra Zoo
+
+<Canvas>
+  <Story id="miniapps-companyminiapp--terra-zoo" />
+</Canvas>
+
+### Tema Escuro
+
+<Canvas>
+  <Story id="miniapps-companyminiapp--tema-escuro" />
+</Canvas>
+
+## Guia de Implementação
+
+O CompanyMiniApp é projetado para ser usado como o conteúdo principal quando uma empresa é selecionada no AppLayout.
+
+### Integração com AppLayout
+
+```svelte
+<AppLayout
+  companies={companies}
+  miniApps={miniApps}
+  children={{
+    miniapp: (miniApp) => {
+      const company = companies.find(c => c.id === miniApp.companyId);
+      if (company) {
+        return <CompanyMiniApp {miniApp} {company} />;
+      }
+      return null;
+    },
+    default: () => <div>Selecione uma empresa</div>
+  }}
+/>
+```
+
+### Estrutura de Abas
+
+O componente utiliza um sistema de abas para organizar o conteúdo:
+
+1. **Visão Geral**: Exibe informações básicas da empresa e um resumo das atividades
+2. **Análises**: Exibe gráficos e métricas relacionadas à empresa
+3. **Configurações**: Permite configurar preferências relacionadas à empresa

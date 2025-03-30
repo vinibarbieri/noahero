@@ -1,0 +1,6 @@
+- address: xion1hyvx9s4y87x87wqu9v6sa64dlfggq3wynp0z5s
+  name: wallet1
+  pubkey: '{"@type":"/cosmos.crypto.secp256k1.PubKey","key":"AlQZFV2Dvb8EySCvrY50lXJDllN+SB8Ep5bCohMrrK20"}'
+  type: local
+
+  minimum enter error table salmon random dolphin oxygen code copper nurse vivid nurse coach sound suggest scatter advance notable ball emerge celery tobacco faint

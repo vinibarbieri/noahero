@@ -1,0 +1,133 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700&family=Inter:wght@100..900&family=Lexend:wght@100..900&display=swap');
+@import 'tailwindcss';
+@plugin '@tailwindcss/forms';
+@plugin '@tailwindcss/typography';
+
+/* Importação das fontes */
+@import './lib/styles/fonts.css';
+
+/* Estilos globais personalizados */
+input[type="search"] {
+  -webkit-appearance: none;
+  appearance: none;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+@custom-variant dark (&:where(.dark, .dark *));
+/* Tema base com valores compartilhados */
+@theme {
+  /* Tipografia */
+  --font-family-sans: 'Inter Tight', 'Inter var', system-ui, -apple-system, sans-serif;
+  --font-family-display: 'Lexend', Georgia, serif;
+  --font-size-xxs: 0.625rem;
+
+  /* Espaçamento */
+  --spacing-128: 32rem;
+  --spacing-144: 36rem;
+
+  /* Bordas */
+  --border-radius-4xl: 2rem;
+
+  /* Larguras máximas */
+  --max-width-8xl: 88rem;
+  --max-width-9xl: 96rem;
+
+  /* Breakpoints */
+  --screen-xs: 475px;
+  --screen-3xl: 1920px;
+
+  /* Cores primárias - Paleta Roxa */
+  --color-primary-50: #eeeefc;
+  --color-primary-100: #cacaf4;
+  --color-primary-200: #b7b7f0;
+  --color-primary-300: #9191e8;
+  --color-primary-400: #6a6ad8;
+  --color-primary-500: #4444c8;
+  --color-primary-600: #3333a3;
+  --color-primary-700: #22227e;
+  --color-primary-800: #11005e;
+  --color-primary-900: #0a0042;
+  --color-primary-950: #050026;
+
+  /* Cores secundárias */
+  --color-secondary-50: #f5f3ff;
+  --color-secondary-100: #ede9fe;
+  --color-secondary-200: #ddd6fe;
+  --color-secondary-300: #c4b5fd;
+  --color-secondary-400: #a78bfa;
+  --color-secondary-500: #8b5cf6;
+  --color-secondary-600: #7c3aed;
+  --color-secondary-700: #6d28d9;
+  --color-secondary-800: #5b21b6;
+  --color-secondary-900: #4c1d95;
+  --color-secondary-950: #2e1065;
+
+  /* Cores neutras */
+  --color-neutral-50: #fafafa;
+  --color-neutral-100: #f4f4f5;
+  --color-neutral-200: #e4e4e7;
+  --color-neutral-300: #d4d4d8;
+  --color-neutral-400: #a1a1aa;
+  --color-neutral-500: #71717a;
+  --color-neutral-600: #52525b;
+  --color-neutral-700: #3f3f46;
+  --color-neutral-800: #27272a;
+  --color-neutral-900: #18181b;
+  --color-neutral-950: #09090b;
+
+  /* Cores semânticas */
+  --color-background: var(--color-neutral-50);
+  --color-surface: white;
+  --color-text: var(--color-neutral-900);
+  --color-text-secondary: var(--color-neutral-600);
+  --color-border: var(--color-neutral-200);
+
+/* Tema Dark */
+  /* Cores primárias (mais saturadas para dark mode) */
+  --color-dark-primary-50: #082f49;
+  --color-dark-primary-100: #0c4a6e;
+  --color-dark-primary-200: #075985;
+  --color-dark-primary-300: #0369a1;
+  --color-dark-primary-400: #0284c7;
+  --color-dark-primary-500: #0ea5e9;
+  --color-dark-primary-600: #38bdf8;
+  --color-dark-primary-700: #7dd3fc;
+  --color-dark-primary-800: #bae6fd;
+  --color-dark-primary-900: #e0f2fe;
+  --color-dark-primary-950: #f0f9ff;
+
+  /* Cores secundárias (mais saturadas para dark mode) */
+  --color-dark-secondary-50: #2e1065;
+  --color-dark-secondary-100: #4c1d95;
+  --color-dark-secondary-200: #5b21b6;
+  --color-dark-secondary-300: #6d28d9;
+  --color-dark-secondary-400: #7c3aed;
+  --color-dark-secondary-500: #8b5cf6;
+  --color-dark-secondary-600: #a78bfa;
+  --color-dark-secondary-700: #c4b5fd;
+  --color-dark-secondary-800: #ddd6fe;
+  --color-dark-secondary-900: #ede9fe;
+  --color-dark-secondary-950: #f5f3ff;
+
+  /* Cores neutras (invertidas para dark mode) */
+  --color-dark-neutral-50: #09090b;
+  --color-dark-neutral-100: #18181b;
+  --color-dark-neutral-200: #27272a;
+  --color-dark-neutral-300: #3f3f46;
+  --color-dark-neutral-400: #52525b;
+  --color-dark-neutral-500: #71717a;
+  --color-dark-neutral-600: #a1a1aa;
+  --color-dark-neutral-700: #d4d4d8;
+  --color-dark-neutral-800: #e4e4e7;
+  --color-dark-neutral-900: #f4f4f5;
+  --color-dark-neutral-950: #fafafa;
+
+  /* Cores semânticas */
+  --color-dark-background: var(--color-dark-neutral-950);
+  --color-dark-surface: var(--color-dark-neutral-900);
+  --color-dark-text: var(--color-dark-neutral-50);
+  --color-dark-text-secondary: var(--color-dark-neutral-400);
+  --color-dark-border: var(--color-neutral-800);
+}

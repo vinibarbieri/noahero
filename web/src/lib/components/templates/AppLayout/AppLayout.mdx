@@ -1,0 +1,81 @@
+import { Meta, Story, Canvas, Controls, Primary } from '@storybook/blocks';
+import * as AppLayoutStories from './AppLayout.stories.svelte';
+
+<Meta of={AppLayoutStories} />
+
+# AppLayout
+
+O componente AppLayout é o template principal da aplicação, fornecendo uma estrutura consistente para todas as páginas.
+
+## Características
+
+- Sidebar com lista de empresas
+- Navegação entre miniapps
+- Suporte a tema claro/escuro
+- Layout responsivo
+- Canto arredondado na área de conteúdo que sobrepõe o sidebar
+
+## Uso Básico
+
+<Primary />
+
+## Propriedades
+
+<Controls />
+
+## Variantes
+
+### Desktop
+
+<Canvas>
+  <Story id="templates-applayout--desktop" />
+</Canvas>
+
+### Mobile
+
+<Canvas>
+  <Story id="templates-applayout--mobile" />
+</Canvas>
+
+### Dark Theme
+
+<Canvas>
+  <Story id="templates-applayout--dark-theme" />
+</Canvas>
+
+## Guia de Implementação
+
+O AppLayout é projetado para ser usado como o layout principal da aplicação, fornecendo uma estrutura consistente para todas as páginas.
+
+### Snippets
+
+O componente utiliza snippets para renderizar conteúdo dinâmico:
+
+```svelte
+<AppLayout
+  companies={companies}
+  miniApps={miniApps}
+  children={{
+    miniapp: (miniApp) => `
+      <div>
+        <h1 class="text-2xl font-bold mb-4">${miniApp.title}</h1>
+        <p>Conteúdo do miniapp da empresa</p>
+      </div>
+    `,
+    default: () => `
+      <div>
+        <h1 class="text-2xl font-bold mb-4">Selecione uma empresa</h1>
+        <p>Conteúdo padrão quando nenhum miniapp está selecionado</p>
+      </div>
+    `
+  }}
+/>
+```
+
+### Compatibilidade com Svelte 5
+
+Este componente foi projetado para ser compatível com Svelte 5, utilizando:
+
+- Runes (`$state`, `$props`, `$effect`) para gerenciamento de estado
+- Snippets para renderização de conteúdo dinâmico
+- Atributos de evento em vez de diretivas `on:`

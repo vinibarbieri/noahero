@@ -1,0 +1,68 @@
+xiond tx wasm instantiate <code_id> '{
+  "name": "VoucherNFT",
+  "symbol": "VCH",
+  "minter": "xion1hyvx9s4y87x87wqu9v6sa64dlfggq3wynp0z5s"
+}' \
+--from wallet1 \
+--admin xion1hyvx9s4y87x87wqu9v6sa64dlfggq3wynp0z5s \
+--label "voucher-nft" \
+--chain-id xion-testnet-2 \
+--node https://rpc.xion-testnet-2.burnt.com:443 \
+--gas auto \
+--gas-adjustment 1.3 \
+--broadcast-mode sync \
+--yes
+
+xiond tx wasm instantiate $CODE_ID '{
+  "name": "VoucherNFT",
+  "symbol": "VCH",
+  "minter": "xion1hyvx9s4y87x87wqu9v6sa64dlfggq3wynp0z5s"
+}' \
+  --from $WALLET \
+  --label "voucher-nft" \
+  --gas-prices 0.025uxion \
+  --gas auto \
+  --gas-adjustment 1.3 \
+  -y --no-admin \
+  --chain-id xion-testnet-2 \
+  --node https://rpc.xion-testnet-2.burnt.com:443
+
+
+RES=$(xiond tx wasm store artifacts/xion_nft.wasm \
+  --from wallet1 \
+  --chain-id xion-testnet-2 \
+  --node https://rpc.xion-testnet-2.burnt.com:443 \
+  --gas auto \
+  --gas-adjustment 1.3 \
+  --gas-prices 0.1uxion \
+  --output json \
+  --yes)
+
+
+
+https://brown-obliged-albatross-730.mypinata.cloud/ipfs/bafkreiesc5lgbam5dpcq2j34j6y2fxladrryinx2mmr2iegaunjnp3z2ya
+
+
+xiond tx wasm execute $CONTRACT '{
+  "mint": {
+    "token_id": "nft-001",
+    "owner": "xion1hyvx9s4y87x87wqu9v6sa64dlfggq3wynp0z5s",
+    "token_uri": "https://brown-obliged-albatross-730.mypinata.cloud/ipfs/bafkreiesc5lgbam5dpcq2j34j6y2fxladrryinx2mmr2iegaunjnp3z2ya",
+    "extension": {
+      "value": "100",
+      "store_id": "store-123",
+      "original_owner": "xion1hyvx9s4y87x87wqu9v6sa64dlfggq3wynp0z5s",
+      "expiration_date": "1767150001",
+      "receipt_id": "rec-789",
+      "used": false,
+      "token_uri": "https://brown-obliged-albatross-730.mypinata.cloud/ipfs/bafkreiesc5lgbam5dpcq2j34j6y2fxladrryinx2mmr2iegaunjnp3z2ya"
+    }
+  }
+}' \
+--from wallet1 \
+--chain-id xion-testnet-2 \
+--node https://rpc.xion-testnet-2.burnt.com:443 \
+--gas auto \
+--gas-adjustment 1.3 \
+--gas-prices 0.025uxion \
+--yes

@@ -1,0 +1,72 @@
+import { Meta, Story, Canvas, Controls, Primary } from '@storybook/blocks';
+import * as UserMiniAppStories from './UserMiniApp.stories.svelte';
+
+<Meta of={UserMiniAppStories} />
+
+# UserMiniApp
+
+O UserMiniApp é o componente principal para exibir informações e funcionalidades relacionadas ao usuário logado.
+
+## Características
+
+- Exibe informações do perfil do usuário
+- Navegação por abas (Perfil, Notificações, Configurações)
+- Suporte a tema claro/escuro
+- Layout responsivo
+
+## Uso Básico
+
+<Primary />
+
+## Propriedades
+
+<Controls />
+
+## Variantes
+
+### Padrão
+
+<Canvas>
+  <Story id="miniapps-userminiapp--padrão" />
+</Canvas>
+
+### Tema Escuro
+
+<Canvas>
+  <Story id="miniapps-userminiapp--tema-escuro" />
+</Canvas>
+
+## Guia de Implementação
+
+O UserMiniApp é projetado para ser usado como o conteúdo principal quando o usuário clica no primeiro ícone da lista de avatares no AppLayout2.
+
+### Integração com AppLayout2
+
+```svelte
+<AppLayout2
+  companies={companies}
+  miniApps={miniApps}
+  userMiniApp={userMiniApp}
+>
+  {#snippet userProfile(miniApp)}
+    <UserMiniApp {miniApp} />
+  {/snippet}
+
+  {#snippet miniapp(miniApp)}
+    <CompanyMiniApp 
+      {miniApp} 
+      company={companies.find(c => c.id === miniApp.companyId)} 
+    />
+  {/snippet}
+
+  <div>Selecione uma empresa</div>
+</AppLayout2>
+```
+
+### Estrutura de Abas
+
+O componente utiliza um sistema de abas para organizar o conteúdo:
+
+1. **Perfil**: Exibe informações básicas do usuário e um resumo das atividades
+2. **Notificações**: Exibe notificações do sistema
+3. **Configurações**: Permite configurar preferências da conta

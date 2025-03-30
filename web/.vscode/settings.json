@@ -1,0 +1,6 @@
+{
+  "vitest.enable": true,
+  "vitest.commandLine": "npm run test:unit",
+  "testing.automaticallyOpenPeekView": "never",
+  "typescript.tsdk": "node_modules/typescript/lib"
+} 
