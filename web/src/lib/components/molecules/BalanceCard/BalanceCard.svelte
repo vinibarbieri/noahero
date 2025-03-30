@@ -1,24 +1,69 @@
 <script lang="ts">
+  import { BalanceDialog } from '$lib/components/organisms/BalanceDialog';
+  import { formatCurrency } from '$lib/utils/formatters';
+
   // Props
   let {
     balance = 0,
-    currency = '$',
+    currency = 'R$',
     title = 'Your Balance',
-    showIcon = true
+    showIcon = true,
+    percentChange = 0,
+    valueChange = 0,
+    isOwner = false,
+    cardNumber = '4567',
+    vouchers = [],
+    transactions = []
   } = $props<{
     balance: number;
     currency?: string;
     title?: string;
     showIcon?: boolean;
+    percentChange?: number;
+    valueChange?: number;
+    isOwner?: boolean;
+    cardNumber?: string;
+    vouchers?: Array<{
+      id: string;
+      name: string;
+      image?: string;
+      price?: number;
+      timeRemaining?: string;
+      notForSale?: boolean;
+    }>;
+    transactions?: Array<{
+      id: string;
+      name: string;
+      icon?: string;
+      verified: boolean;
+      price: number;
+      currency: string;
+      volume: number;
+      date: Date;
+      type: 'buy' | 'sell' | 'transfer';
+    }>;
   }>();
 
-  // Format currency for display
-  function formatCurrency(amount: number, currencySymbol: string = '$'): string {
-    return `${currencySymbol}${amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  // Estado local
+  let isDialogOpen = $state(false);
+
+  // Abrir o dialog
+  function openDialog() {
+    isDialogOpen = true;
+  }
+
+  // Fechar o dialog
+  function closeDialog() {
+    isDialogOpen = false;
   }
 </script>
 
-<div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-2 w-full h-full flex flex-col justify-center">
+<button
+  class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-2 w-full h-full flex flex-col justify-center cursor-pointer hover:shadow-md transition-shadow text-left"
+  onclick={openDialog}
+  onkeydown={(e: KeyboardEvent) => e.key === 'Enter' && openDialog()}
+  aria-label="Ver detalhes do saldo"
+>
   <div class="flex items-center gap-1 mb-0.5 text-gray-500 dark:text-gray-400">
     {#if showIcon}
       <div class="w-5 h-5 flex items-center justify-center bg-gray-100 dark:bg-gray-700 rounded-md">
@@ -34,4 +79,18 @@
   <div class="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">
     {formatCurrency(balance, currency)}
   </div>
-</div>
+</button>
+
+<!-- Balance Dialog -->
+<BalanceDialog
+  isOpen={isDialogOpen}
+  onClose={closeDialog}
+  balance={balance}
+  currency={currency}
+  percentChange={percentChange}
+  valueChange={valueChange}
+  isOwner={isOwner}
+  cardNumber={cardNumber}
+  vouchers={vouchers}
+  transactions={transactions}
+/>

@@ -1,5 +1,8 @@
 <script lang="ts">
   import { CompanyMiniAppTemplate } from '$lib/components/templates/CompanyMiniAppTemplate';
+  import { setCompanyContext } from '$lib/contexts/CompanyContext';
+  import { setVoucherContext } from '$lib/contexts/VoucherContext';
+  import { setActiveFilter, setActiveNavigationItem, setActiveTab, setSearchValue } from '$lib/stores/UIStore.svelte';
   import type { Company, MiniApp } from '$lib/types';
   import { onMount } from 'svelte';
 
@@ -97,15 +100,27 @@
   // Lifecycle
   onMount(() => {
     console.log('CompanyMiniApp mounted', { miniApp, company });
+
+    // Definir os contextos para a empresa atual
+    setVoucherContext();
+    setCompanyContext(company, isOwnProfile, products);
+
+    // Inicializar o estado da UI
+    setActiveTab(activeTab);
+    setActiveFilter(activeFilter);
+    setActiveNavigationItem(activeNavigationItem);
+    setSearchValue(searchValue);
   });
 
   // Event handlers
   function handleTabChange(tabId: string) {
     activeTab = tabId;
+    setActiveTab(tabId);
   }
 
   function handleFilterChange(filterId: string) {
     activeFilter = filterId;
+    setActiveFilter(filterId);
   }
 
   function handleFavoriteToggle(productId: string) {
@@ -123,6 +138,7 @@
 
   function handleNavigationItemClick(itemId: string) {
     activeNavigationItem = itemId;
+    setActiveNavigationItem(itemId);
   }
 
   // Profile action handlers
@@ -167,19 +183,27 @@
   companyName={company.name}
   companyUsername={company.name.toLowerCase().replace(/\s+/g, '')}
   companyAvatarUrl={company.icon || "https://via.placeholder.com/150"}
-  companyIsVerified={true}
-  companyPostsCount={641}
-  companyFollowersCount={23400}
-  companyFollowingCount={3861}
-  companyVoucherBalance={4259.32}
-  companyVoucherCurrency="$"
-  companyBio="ASSISTÊNCIA TÉCNICA AUTORIZADA IRP\nAPPLE | MACBOOK | IPHONE\n\n🔗 Reconectamos você com o seu Apple!\n🔧 Reparos em APPLE WATCH | IPAD | MACBOOK\n🏆 +20k de clientes em 14 anos de experiência"
-  companyLinks={[
+  companyIsVerified={company.isVerified || true}
+  companyPostsCount={company.postsCount || 641}
+  companyFollowersCount={company.followersCount || 23400}
+  companyFollowingCount={company.followingCount || 3861}
+  companyVoucherBalance={company.voucherBalance || 4259.32}
+  companyVoucherCurrency={company.voucherCurrency || "R$"}
+  companyBio={company.bio || "ASSISTÊNCIA TÉCNICA AUTORIZADA IRP\nAPPLE | MACBOOK | IPHONE\n\n🔗 Reconectamos você com o seu Apple!\n🔧 Reparos em APPLE WATCH | IPAD | MACBOOK\n🏆 +20k de clientes em 14 anos de experiência"}
+  companyLinks={company.links || [
     { url: 'https://linktr.ee/we.three', text: 'linktr.ee/we.three' },
     { url: '#', text: 'São Luís, Brazil' }
   ]}
   companyStatus={company.status || 'none'}
   isOwnProfile={isOwnProfile}
+  companyCategory={company.category || ''}
+  companyAddress={company.address || ''}
+  companyPhone={company.phone || ''}
+  companyWorkingHours={company.workingHours || ''}
+  companyHistory={company.history || ''}
+  companyWebsite={company.website || ''}
+  companyInstagram={company.instagram || ''}
+  companyFacebook={company.facebook || ''}
   onFollowClick={handleFollowClick}
   onEditProfileClick={handleEditProfileClick}
   onShareProfileClick={handleShareProfileClick}

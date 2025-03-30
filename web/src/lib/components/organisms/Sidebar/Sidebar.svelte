@@ -12,8 +12,11 @@
   }>();
 
   function handleCompanySelect(event: CustomEvent<{ item: Company }>) {
+    // Ainda emitimos o evento para manter a compatibilidade com o código existente
     selectedCompanyId = event.detail.item.id;
     select(event.detail.item);
+
+    // Não precisamos navegar programaticamente, pois o link do avatar já fará isso
   }
 
   let avatarItems: Company[] = $state([]);

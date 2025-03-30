@@ -36,16 +36,8 @@
   data-testid="avatar-list"
 >
   {#each items as item (item.id)}
-    <!-- svelte-ignore a11y-click-events-have-key-events -->
-    <div
-      class="cursor-pointer"
-      on:click={() => handleClick(item)}
-      on:keydown={(e: KeyboardEvent) => e.key === 'Enter' && handleClick(item)}
-      role="button"
-      tabindex="0"
-      aria-label={`Select ${item.name}`}
-    >
-      <Avatar {...item} {size} />
+    <div class="cursor-pointer">
+      <Avatar {...item} {size} on:click={() => handleClick(item)} />
     </div>
   {/each}
 </div>

@@ -2,7 +2,10 @@
   import { Avatar } from '$lib/components/atoms/Avatar';
   import { BalanceCard } from '$lib/components/molecules/BalanceCard';
   import { Dialog } from '$lib/components/molecules/Dialog';
-  
+  import FullPageDialog from '$lib/components/molecules/FullPageDialog/FullPageDialog.svelte';
+  import ShareDialog from '$lib/components/molecules/ShareDialog/ShareDialog.svelte';
+  import ProfileEditForm from '$lib/components/organisms/ProfileEditForm/ProfileEditForm.svelte';
+
   // Props
   let {
     name = '',
@@ -18,6 +21,14 @@
     links = [],
     status = 'none',
     isOwnProfile = false,
+    category = '',
+    address = '',
+    phone = '',
+    workingHours = '',
+    history = '',
+    website = '',
+    instagram = '',
+    facebook = '',
     onFollowClick,
     onEditProfileClick,
     onShareProfileClick,
@@ -36,6 +47,14 @@
     links?: Array<{url: string, text: string}>;
     status?: 'none' | 'story' | 'live';
     isOwnProfile?: boolean;
+    category?: string;
+    address?: string;
+    phone?: string;
+    workingHours?: string;
+    history?: string;
+    website?: string;
+    instagram?: string;
+    facebook?: string;
     onFollowClick?: () => void;
     onEditProfileClick?: () => void;
     onShareProfileClick?: () => void;
@@ -58,11 +77,56 @@
   }
 
   function handleEditProfileClick() {
+    isEditDialogOpen = true;
     if (onEditProfileClick) onEditProfileClick();
   }
 
+  function handleProfileEditSave(data: {
+    name: string;
+    username: string;
+    bio: string;
+    links: Array<{url: string, text: string}>;
+    category?: string;
+    address?: string;
+    phone?: string;
+    workingHours?: string;
+    history?: string;
+    website?: string;
+    instagram?: string;
+    facebook?: string;
+  }) {
+    // Update local state
+    name = data.name;
+    username = data.username;
+    bio = data.bio;
+    links = data.links;
+    category = data.category || '';
+    address = data.address || '';
+    phone = data.phone || '';
+    workingHours = data.workingHours || '';
+    history = data.history || '';
+    website = data.website || '';
+    instagram = data.instagram || '';
+    facebook = data.facebook || '';
+
+    // Log the updated data
+    console.log('Dados editados:', data);
+
+    // Close dialog
+    isEditDialogOpen = false;
+  }
+
+  function handleProfileEditCancel() {
+    isEditDialogOpen = false;
+  }
+
   function handleShareProfileClick() {
+    isShareDialogOpen = true;
     if (onShareProfileClick) onShareProfileClick();
+  }
+
+  function closeShareDialog() {
+    isShareDialogOpen = false;
   }
 
   function handleEditAvatarClick(event: MouseEvent) {
@@ -70,18 +134,20 @@
     event.stopPropagation();
     if (onEditAvatarClick) onEditAvatarClick();
   }
-  
-  // Dialog state
+
+  // Dialog states
   let isProfileDialogOpen = $state(false);
-  
+  let isEditDialogOpen = $state(false);
+  let isShareDialogOpen = $state(false);
+
   function openProfileDialog() {
     isProfileDialogOpen = true;
   }
-  
+
   function closeProfileDialog() {
     isProfileDialogOpen = false;
   }
-  
+
   // Dialog content
   function getDialogContent() {
     return `
@@ -95,7 +161,7 @@
             </svg>
           ` : ''}
         </div>
-        
+
         <!-- Bio -->
         ${bio ? `
           <div class="mb-4">
@@ -109,11 +175,11 @@
           <div class="mb-4">
             <h3 class="font-medium text-gray-900 dark:text-white mb-1">Links</h3>
             <div class="text-blue-600 dark:text-blue-400 flex flex-wrap gap-2">
-              ${links.map(link => `
-                <a 
-                  href="${link.url}" 
+              ${links.map((link: {url: string, text: string}) => `
+                <a
+                  href="${link.url}"
                   class="hover:underline flex items-center gap-1 bg-blue-50 dark:bg-blue-900/30 px-2 py-1 rounded-md"
-                  target="_blank" 
+                  target="_blank"
                   rel="noopener noreferrer"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
@@ -125,7 +191,7 @@
             </div>
           </div>
         ` : ''}
-        
+
         <!-- Stats -->
         <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
           <h3 class="font-medium text-gray-900 dark:text-white mb-2">Estatísticas</h3>
@@ -164,7 +230,7 @@
             size="lg"
             status={status}
           />
-          
+
           <!-- Edit Avatar Icon (only shown when isOwnProfile is true) -->
           {#if isOwnProfile}
             <button
@@ -181,7 +247,7 @@
 
         <!-- Username and Verified Badge (mobile only) -->
         <div class="flex items-center gap-2 sm:hidden">
-          <button 
+          <button
             class="text-lg font-semibold text-text dark:text-white truncate hover:underline focus:outline-none"
             onclick={openProfileDialog}
           >
@@ -194,7 +260,7 @@
           {/if}
         </div>
       </div>
-      
+
       <!-- Balance Card (only shown when there's a balance) -->
       {#if voucherBalance > 0}
         <div class="w-24 xs:w-28 sm:w-32 md:w-40 shrink-0">
@@ -206,12 +272,12 @@
         </div>
       {/if}
     </div>
-    
+
     <!-- Middle Row: Username (desktop), Stats -->
     <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-3">
       <!-- Username and Verified Badge (desktop only) -->
       <div class="hidden sm:flex items-center gap-2 min-w-0">
-        <button 
+        <button
           class="text-lg font-semibold text-text dark:text-white truncate hover:underline focus:outline-none"
           onclick={openProfileDialog}
         >
@@ -223,7 +289,7 @@
           </svg>
         {/if}
       </div>
-      
+
       <!-- Stats -->
       <div class="flex gap-4 text-sm">
         <div>
@@ -277,9 +343,44 @@
 </div>
 
 <!-- Profile Dialog -->
-<Dialog 
-  isOpen={isProfileDialogOpen} 
-  title={name} 
+<Dialog
+  isOpen={isProfileDialogOpen}
+  title={name}
   onClose={closeProfileDialog}
   children={getDialogContent()}
+/>
+
+<!-- Edit Profile Dialog -->
+<FullPageDialog
+  isOpen={isEditDialogOpen}
+  title="Editar Perfil"
+  onClose={handleProfileEditCancel}
+  isMobileFullPage={true}
+>
+  <ProfileEditForm
+    name={name}
+    username={username}
+    bio={bio}
+    links={links}
+    category={category}
+    address={address}
+    phone={phone}
+    workingHours={workingHours}
+    history={history}
+    website={website}
+    instagram={instagram}
+    facebook={facebook}
+    onSave={handleProfileEditSave}
+    onCancel={handleProfileEditCancel}
+  />
+</FullPageDialog>
+
+<!-- Share Dialog -->
+<ShareDialog
+  isOpen={isShareDialogOpen}
+  title="Compartilhar Perfil"
+  profileName={name}
+  profileUsername={username}
+  profileUrl={`/profile/${username}`}
+  onClose={closeShareDialog}
 />

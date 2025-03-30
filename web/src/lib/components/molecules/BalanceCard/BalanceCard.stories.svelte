@@ -1,6 +1,66 @@
 <script context="module" lang="ts">
   import { defineMeta, type Args } from '@storybook/addon-svelte-csf';
+  import { fn } from '@storybook/test';
   import BalanceCard from './BalanceCard.svelte';
+
+  // Dados de exemplo para vouchers
+  const exampleVouchers = [
+    {
+      id: '1',
+      name: 'Bitcoin',
+      color: '#F7931A',
+      percentChange: 145.5,
+      value: 45000
+    },
+    {
+      id: '2',
+      name: 'Ethereum',
+      color: '#627EEA',
+      percentChange: 113,
+      value: 3200
+    },
+    {
+      id: '3',
+      name: 'Solana',
+      color: '#00FFA3',
+      percentChange: -0.2,
+      value: 120
+    }
+  ];
+  
+  // Dados de exemplo para transações
+  const exampleTransactions = [
+    {
+      id: '1',
+      name: 'ORGNLS',
+      verified: true,
+      price: 0.01,
+      currency: 'ETH',
+      volume: 30,
+      date: new Date(2023, 5, 15),
+      type: 'buy'
+    },
+    {
+      id: '2',
+      name: 'ANOMALLY',
+      verified: true,
+      price: 0.01,
+      currency: 'ETH',
+      volume: 30,
+      date: new Date(2023, 5, 16),
+      type: 'sell'
+    },
+    {
+      id: '3',
+      name: 'ORGNLS',
+      verified: true,
+      price: 0.01,
+      currency: 'ETH',
+      volume: 30,
+      date: new Date(2023, 5, 17),
+      type: 'transfer'
+    }
+  ];
 
   const { Story } = defineMeta({
     title: 'Molecules/BalanceCard',
@@ -22,6 +82,22 @@
       showIcon: {
         control: 'boolean',
         description: 'Controla se o ícone deve ser exibido'
+      },
+      percentChange: {
+        control: 'number',
+        description: 'Percentual de variação do saldo'
+      },
+      valueChange: {
+        control: 'number',
+        description: 'Valor absoluto da variação do saldo'
+      },
+      isOwner: {
+        control: 'boolean',
+        description: 'Indica se o usuário é proprietário (mostra todas as transações) ou não (mostra apenas suas transações)'
+      },
+      cardNumber: {
+        control: 'text',
+        description: 'Últimos 4 dígitos do cartão'
       }
     },
     parameters: {
@@ -29,6 +105,7 @@
         description: {
           component: `
             O componente BalanceCard é usado para exibir o saldo de vouchers disponíveis para o usuário ou empresa.
+            Ao clicar no card, um dialog detalhado é aberto mostrando informações adicionais sobre o saldo, vouchers disponíveis e transações.
             
             ### Características
             
@@ -38,6 +115,8 @@
             - Título personalizável
             - Ícone opcional
             - Adaptável a diferentes tamanhos
+            - Interativo com abertura de dialog detalhado ao clicar
+            - Visualização diferenciada para usuário comum e proprietário
             
             ### Uso
             
@@ -47,6 +126,12 @@
               currency="$"
               title="Your Balance"
               showIcon={true}
+              percentChange={3.5}
+              valueChange={150}
+              isOwner={false}
+              cardNumber="4567"
+              vouchers={vouchers}
+              transactions={transactions}
             />
             \`\`\`
           `
@@ -67,36 +152,54 @@
   setTemplate(template);
 </script>
 
-<!-- BalanceCard padrão -->
+<!-- BalanceCard para usuário comum -->
 <Story
-  name="Padrão"
+  name="Usuário Comum"
   args={{
     balance: 4259.32,
     currency: "$",
     title: "Your Balance",
-    showIcon: true
+    showIcon: true,
+    percentChange: 3.5,
+    valueChange: 150,
+    isOwner: false,
+    cardNumber: "4567",
+    vouchers: exampleVouchers,
+    transactions: exampleTransactions
   }}
 />
 
-<!-- BalanceCard com valor grande -->
+<!-- BalanceCard para proprietário -->
 <Story
-  name="Valor Grande"
-  args={{
-    balance: 1234567.89,
-    currency: "$",
-    title: "Your Balance",
-    showIcon: true
-  }}
-/>
-
-<!-- BalanceCard com Real brasileiro -->
-<Story
-  name="Real Brasileiro"
+  name="Proprietário"
   args={{
     balance: 15750.50,
     currency: "R$",
-    title: "Seu Saldo",
-    showIcon: true
+    title: "Saldo da Conta",
+    showIcon: true,
+    percentChange: 5.2,
+    valueChange: 780,
+    isOwner: true,
+    cardNumber: "4567",
+    vouchers: exampleVouchers,
+    transactions: exampleTransactions
+  }}
+/>
+
+<!-- BalanceCard com variação negativa -->
+<Story
+  name="Variação Negativa"
+  args={{
+    balance: 3500.75,
+    currency: "€",
+    title: "Your Balance",
+    showIcon: true,
+    percentChange: -2.5,
+    valueChange: -90,
+    isOwner: false,
+    cardNumber: "4567",
+    vouchers: exampleVouchers,
+    transactions: exampleTransactions
   }}
 />
 
@@ -107,7 +210,13 @@
     balance: 4259.32,
     currency: "$",
     title: "Your Balance",
-    showIcon: false
+    showIcon: false,
+    percentChange: 3.5,
+    valueChange: 150,
+    isOwner: false,
+    cardNumber: "4567",
+    vouchers: exampleVouchers,
+    transactions: exampleTransactions
   }}
 />
 
@@ -118,17 +227,12 @@
     balance: 4259.32,
     currency: "$",
     title: "Available Credit",
-    showIcon: true
-  }}
-/>
-
-<!-- BalanceCard com Euro -->
-<Story
-  name="Euro"
-  args={{
-    balance: 3500.75,
-    currency: "€",
-    title: "Your Balance",
-    showIcon: true
+    showIcon: true,
+    percentChange: 3.5,
+    valueChange: 150,
+    isOwner: false,
+    cardNumber: "4567",
+    vouchers: exampleVouchers,
+    transactions: exampleTransactions
   }}
 />

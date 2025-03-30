@@ -45,7 +45,7 @@
 </script>
 
 {#if href}
-  <a {href} class="block" title={name}>
+  <a {href} class="block" title={name} on:click>
     <div class={classes} data-testid="avatar">
       {#if icon}
         <div class="w-full h-full relative">
@@ -64,7 +64,15 @@
     </div>
   </a>
 {:else}
-  <div class={classes} data-testid="avatar">
+  <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-static-element-interactions -->
+  <div
+    class={classes}
+    data-testid="avatar"
+    on:click
+    role="button"
+    tabindex="0"
+    aria-label={name}
+  >
     {#if icon}
       <div class="w-full h-full relative">
         <img

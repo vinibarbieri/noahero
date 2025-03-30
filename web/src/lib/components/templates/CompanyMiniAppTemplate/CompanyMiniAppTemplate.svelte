@@ -22,6 +22,14 @@
     companyLinks = [],
     companyStatus = 'none',
     isOwnProfile = false,
+    companyCategory = '',
+    companyAddress = '',
+    companyPhone = '',
+    companyWorkingHours = '',
+    companyHistory = '',
+    companyWebsite = '',
+    companyInstagram = '',
+    companyFacebook = '',
     onFollowClick,
     onEditProfileClick,
     onShareProfileClick,
@@ -130,6 +138,8 @@
     onSpend?: (productId: string) => void;
     onNavigationItemClick?: (itemId: string) => void;
   }>();
+
+
 </script>
 
 <div class="h-full flex flex-col bg-slate-100 dark:bg-gray-900 font-sans">
@@ -152,6 +162,14 @@
         links={companyLinks}
         status={companyStatus}
         isOwnProfile={isOwnProfile}
+        category={companyCategory}
+        address={companyAddress}
+        phone={companyPhone}
+        workingHours={companyWorkingHours}
+        history={companyHistory}
+        website={companyWebsite}
+        instagram={companyInstagram}
+        facebook={companyFacebook}
         onFollowClick={onFollowClick}
         onEditProfileClick={onEditProfileClick}
         onShareProfileClick={onShareProfileClick}

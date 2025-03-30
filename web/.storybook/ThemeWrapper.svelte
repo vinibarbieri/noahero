@@ -12,4 +12,4 @@
 
 <div class:dark={isDark}>
   {@render children()}
-</div> 
+</div>
