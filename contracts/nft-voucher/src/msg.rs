@@ -14,6 +14,12 @@ pub struct MintMsg {
 #[cw_serde]
 pub enum ExecuteMsg {
     Mint(MintMsg),
+
+    // Novo
+    UpdateTreasury {
+        new_treasury: String,
+    },
+
     TransferNft {
         recipient: String,
         token_id: String,
@@ -44,7 +50,16 @@ pub enum ExecuteMsg {
     },
 }
 
-pub use cw721_base::msg::{
-    QueryMsg,
-    InstantiateMsg,
-};
+// Atualizado: inclui o campo admin
+#[cw_serde]
+pub struct InstantiateMsg {
+    pub name: String,
+    pub symbol: String,
+    pub admin: String,
+    pub treasury: String,
+    pub minter: Option<String>, // se quiser manter compatibilidade com cw721_base
+}
+
+
+// Reutiliza QueryMsg do cw721_base
+pub use cw721_base::msg::QueryMsg;

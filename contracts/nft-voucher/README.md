@@ -1,85 +1,163 @@
-# CosmWasm Starter Pack
+# **CW Counter Starter Contract**
 
-This is a template to build smart contracts in Rust to run inside a
-[Cosmos SDK](https://github.com/cosmos/cosmos-sdk) module on all chains that enable it.
-To understand the framework better, please read the overview in the
-[cosmwasm repo](https://github.com/CosmWasm/cosmwasm/blob/master/README.md),
-and dig into the [cosmwasm docs](https://www.cosmwasm.com).
-This assumes you understand the theory and just want to get coding.
+This is a basic CosmWasm smart contract that allows you to set a counter and then either **increment** or **reset** it. You can also query the current counter value.
 
-## Creating a new repo from template
+---
 
-Assuming you have a recent version of Rust and Cargo installed
-(via [rustup](https://rustup.rs/)),
-then the following should get you a new repo to start a contract:
+## **Prerequisites**
 
-Install [cargo-generate](https://github.com/ashleygwilliams/cargo-generate) and cargo-run-script.
-Unless you did that before, run this line now:
+Before deploying the contract, ensure you have the following:
 
+1. **XION Daemon (`xiond`)**  
+   Follow the official guide to install `xiond`:  
+   [Interact with XION Chain: Setup XION Daemon](https://docs.burnt.com/xion/developers/featured-guides/setup-local-environment/interact-with-xion-chain-setup-xion-daemon)
+
+2. **Docker**  
+   Install and run [Docker](https://www.docker.com/get-started), as it is required to compile the contract.
+
+---
+
+## **Deploy and Interact with the Contract**
+
+### **Step 1: Clone the Repository**
 ```sh
-cargo install cargo-generate --features vendored-openssl
-cargo install cargo-run-script
+git clone https://github.com/burnt-labs/cw-counter
+cd cw-counter
 ```
 
-Now, use it to create your new contract.
-Go to the folder in which you want to place it and run:
+---
 
-**Latest**
-
-```sh
-cargo generate --git https://github.com/CosmWasm/cw-template.git --name PROJECT_NAME
-```
-
-For cloning minimal code repo:
+### **Step 2: Compile and Optimize the Wasm Bytecode**
+Run the following command to compile and optimize the contract:
 
 ```sh
-cargo generate --git https://github.com/CosmWasm/cw-template.git --name PROJECT_NAME -d minimal=true
+docker run --rm -v "$(pwd)":/code \
+  --mount type=volume,source="$(basename "$(pwd)")_cache",target=/target \
+  --mount type=volume,source=registry_cache,target=/usr/local/cargo/registry \
+  cosmwasm/optimizer:0.16.0
 ```
 
-You will now have a new folder called `PROJECT_NAME` (I hope you changed that to something else)
-containing a simple working contract and build system that you can customize.
+> **Note:**  
+> This step uses **CosmWasm's Optimizing Compiler**, which reduces the contract's binary size, making it more efficient for deployment.  
+> Learn more [here](https://github.com/CosmWasm/optimizer).
 
-## Create a Repo
+The optimized contract will be stored as:
+```
+cw-counter/artifacts/cw_counter.wasm
+```
 
-After generating, you have a initialized local git repo, but no commits, and no remote.
-Go to a server (eg. github) and create a new upstream repo (called `YOUR-GIT-URL` below).
-Then run the following:
+---
 
+### **Step 3: Upload the Bytecode to the Blockchain**
+First, set your wallet address:
 ```sh
-# this is needed to create a valid Cargo.lock file (see below)
-cargo check
-git branch -M main
-git add .
-git commit -m 'Initial Commit'
-git remote add origin YOUR-GIT-URL
-git push -u origin main
+WALLET="your-wallet-address-here"
 ```
 
-## CI Support
+Now, upload the contract to the blockchain:
+```sh
+RES=$(xiond tx wasm store ./artifacts/cw_counter.wasm \
+      --chain-id xion-testnet-1 \
+      --gas-adjustment 1.3 \
+      --gas-prices 0.1uxion \
+      --gas auto \
+      -y --output json \
+      --node https://rpc.xion-testnet-1.burnt.com:443 \
+      --from $WALLET)
+```
 
-We have template configurations for both [GitHub Actions](.github/workflows/Basic.yml)
-and [Circle CI](.circleci/config.yml) in the generated project, so you can
-get up and running with CI right away.
+After running the command, **extract the transaction hash**:
+```sh
+echo $RES
+```
 
-One note is that the CI runs all `cargo` commands
-with `--locked` to ensure it uses the exact same versions as you have locally. This also means
-you must have an up-to-date `Cargo.lock` file, which is not auto-generated.
-The first time you set up the project (or after adding any dep), you should ensure the
-`Cargo.lock` file is updated, so the CI will test properly. This can be done simply by
-running `cargo check` or `cargo unit-test`.
+Example output:
+```json
+{
+  "height": "0",
+  "txhash": "B557242F3BBF2E68D228EBF6A792C3C617C8C8C984440405A578FBBB8A385035",
+  ...
+}
+```
 
-## Using your project
+Copy the transaction hash for the next step.
 
-Once you have your custom repo, you should check out [Developing](./Developing.md) to explain
-more on how to run tests and develop code. Or go through the
-[online tutorial](https://docs.cosmwasm.com/) to get a better feel
-of how to develop.
+---
 
-[Publishing](./Publishing.md) contains useful information on how to publish your contract
-to the world, once you are ready to deploy it on a running blockchain. And
-[Importing](./Importing.md) contains information about pulling in other contracts or crates
-that have been published.
+### **Step 4: Retrieve the Code ID**
+Set your transaction hash:
+```sh
+TXHASH="your-txhash-here"
+```
 
-Please replace this README file with information about your specific project. You can keep
-the `Developing.md` and `Publishing.md` files as useful references, but please set some
-proper description in the README.
+Query the blockchain to get the **Code ID**:
+```sh
+CODE_ID=$(xiond query tx $TXHASH \
+  --node https://rpc.xion-testnet-1.burnt.com:443 \
+  --output json | jq -r '.events[-1].attributes[1].value')
+```
+
+Now, display the retrieved Code ID:
+```sh
+echo $CODE_ID
+```
+
+Example output:
+```
+1213
+```
+
+---
+
+### **Step 5: Instantiate the Contract**
+Set the contract's initialization message:
+```sh
+MSG='{ "count": 1 }'
+```
+
+Instantiate the contract with the **Code ID** from the previous step:
+```sh
+xiond tx wasm instantiate $CODE_ID "$MSG" \
+  --from $WALLET \
+  --label "cw-counter" \
+  --gas-prices 0.025uxion \
+  --gas auto \
+  --gas-adjustment 1.3 \
+  -y --no-admin \
+  --chain-id xion-testnet-1 \
+  --node https://rpc.xion-testnet-1.burnt.com:443
+```
+
+Example output:
+```
+gas estimate: 217976
+code: 0
+txhash: 09D48FE11BE8D8BD4FCE11D236D80D180E7ED7707186B1659F5BADC4EC116F30
+```
+
+Copy the new transaction hash for the next step.
+
+---
+
+### **Step 6: Retrieve the Contract Address**
+Set the new transaction hash:
+```sh
+TXHASH="your-txhash-here"
+```
+
+Query the blockchain to get the **contract address**:
+```sh
+CONTRACT=$(xiond query tx $TXHASH \
+  --node https://rpc.xion-testnet-1.burnt.com:443 \
+  --output json | jq -r '.events[] | select(.type == "instantiate") | .attributes[] | select(.key == "_contract_address") | .value')
+```
+
+Display the contract address:
+```sh
+echo $CONTRACT
+```
+
+Example output:
+```
+xion1v6476wrjmw8fhsh20rl4h6jadeh5sdvlhrt8jyk2szrl3pdj4musyxj6gl
+```

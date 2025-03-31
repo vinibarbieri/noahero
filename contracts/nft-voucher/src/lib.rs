@@ -5,3 +5,6 @@ pub const CONTRACT_VERSION: &str = env!("CARGO_PKG_VERSION");
 pub mod contract;
 pub mod msg;
 pub mod state;
+
+// #[cfg(test)]
+// mod tests;
