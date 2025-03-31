@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { API_KEY_MOCK } from '$env/static/private';
 	import { CheckoutDialog } from '$lib/components/molecules/CheckoutDialog';
 	import FullPageDialog from '$lib/components/molecules/FullPageDialog/FullPageDialog.svelte';
 	import { TransactionList } from '$lib/components/molecules/TransactionList';
@@ -57,7 +56,7 @@
   let isVoucherManagementDialogOpen = $state(false);
 
   // API key de exemplo (em produção, isso viria do backend)
-  const apiKey = API_KEY_MOCK  
+  const apiKey = "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"  
 
   // Calcular o valor total dos vouchers
   let totalVoucherValue = $derived(vouchers.reduce((total: number, voucher: any) => total + (voucher.price || 0), 0));
