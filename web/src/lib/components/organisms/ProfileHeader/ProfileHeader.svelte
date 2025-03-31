@@ -266,6 +266,7 @@
         <div class="w-24 xs:w-28 sm:w-32 md:w-40 shrink-0">
           <BalanceCard
             balance={voucherBalance}
+            isOwner={isOwnProfile}
             currency={voucherCurrency}
             title={isOwnProfile ? "Your Balance" : "Available"}
           />

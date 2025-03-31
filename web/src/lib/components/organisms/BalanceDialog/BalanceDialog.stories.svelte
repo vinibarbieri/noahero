@@ -184,10 +184,7 @@
         control: 'boolean',
         description: 'Indica se o usuário é proprietário (mostra todas as transações) ou não (mostra apenas suas transações)'
       },
-      cardNumber: {
-        control: 'text',
-        description: 'Últimos 4 dígitos do cartão'
-      }
+
     },
     args: {
       onClose: fn()
@@ -201,7 +198,10 @@
             ### Características
 
             - Exibe saldo total com variação percentual e absoluta
-            - Mostra últimos dígitos do cartão
+            - Mostra "Saldo disponível para cashback" para proprietários e "Coins Disponíveis" para usuários
+            - Botão de "Recarregar" para proprietários e "Comprar" para usuários
+            - Dialog de checkout para adicionar fundos
+
             - Abas para alternar entre vouchers e transações
             - Visualização diferenciada para usuário comum e proprietário
             - Carrossel de vouchers disponíveis
@@ -220,7 +220,7 @@
               percentChange={3.5}
               valueChange={12456}
               isOwner={true}
-              cardNumber="4567"
+
               vouchers={vouchers}
               transactions={transactions}
             />
@@ -258,7 +258,7 @@
     percentChange: 3.5,
     valueChange: 12456,
     isOwner: false,
-    cardNumber: "4567",
+
     vouchers: exampleVouchers,
     transactions: exampleTransactions
   }}
@@ -274,7 +274,7 @@
     percentChange: 3.5,
     valueChange: 12456,
     isOwner: true,
-    cardNumber: "4567",
+
     vouchers: exampleVouchers,
     transactions: exampleTransactions
   }}
@@ -290,7 +290,7 @@
     percentChange: -2.5,
     valueChange: -1890,
     isOwner: false,
-    cardNumber: "4567",
+
     vouchers: exampleVouchers,
     transactions: exampleTransactions
   }}
@@ -306,7 +306,7 @@
     percentChange: 3.5,
     valueChange: 12456,
     isOwner: false,
-    cardNumber: "4567",
+
     vouchers: [],
     transactions: exampleTransactions
   }}
@@ -322,7 +322,7 @@
     percentChange: 3.5,
     valueChange: 12456,
     isOwner: false,
-    cardNumber: "4567",
+
     vouchers: exampleVouchers,
     transactions: []
   }}
@@ -338,7 +338,7 @@
     percentChange: 3.5,
     valueChange: 12456,
     isOwner: false,
-    cardNumber: "4567",
+
     vouchers: exampleVouchers,
     transactions: exampleTransactions
   }}

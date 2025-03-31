@@ -232,5 +232,23 @@ export const mockMiniApps: MiniApp[] = [
     path: '/company/casas-vidal',
     type: 'company',
     description: 'Variedades para o lar'
+  },
+  {
+    id: 'nft-marketplace',
+    companyId: 'system',
+    title: 'NFT Marketplace',
+    path: '/marketplace',
+    type: 'system',
+    icon: 'shopping_bag',
+    description: 'Explore e compre NFTs exclusivos'
+  },
+  {
+    id: 'user-wallet',
+    companyId: 'user',
+    title: 'Minha Carteira',
+    path: '/wallet',
+    type: 'user',
+    icon: 'account_balance_wallet',
+    description: 'Gerencie seus NFTs e tokens'
   }
 ];

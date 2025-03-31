@@ -8,6 +8,9 @@
     <p class="text-primary-600 mb-6">
       Selecione uma empresa na barra lateral para visualizar seu conteúdo.
     </p>
+    <a href="/landing" class="inline-block px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors mb-6">
+      Ver nossa página de entrada
+    </a>
     <div class="flex justify-center space-x-4">
       <div class="w-12 h-12 rounded-full bg-primary-100 flex items-center justify-center">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">

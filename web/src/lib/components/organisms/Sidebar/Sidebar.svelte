@@ -61,7 +61,10 @@
       <div class="h-2"></div>
 
       <AvatarList
-        items={avatarItems}
+        items={avatarItems.map(item => ({
+          ...item,
+          status: item.status === 'active' ? 'none' : item.status as 'none' | 'story' | 'live'
+        }))}
         size="md"
         gap="md"
         on:select={handleCompanySelect}

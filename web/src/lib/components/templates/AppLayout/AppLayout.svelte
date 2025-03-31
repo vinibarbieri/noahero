@@ -1,19 +1,18 @@
 <script lang="ts">
-  import { NoahLogo } from '$lib/components/atoms/NoahLogo';
-  import { SearchFieldCompact } from '$lib/components/atoms/SearchField';
-  import { UserMenu } from '$lib/components/molecules/UserMenu';
-  import { Sidebar } from '$lib/components/organisms/Sidebar';
-  import type { Company, MiniApp } from '$lib/types';
-  import { onMount } from 'svelte';
+	import { page } from '$app/stores';
+	import { NoahLogo } from '$lib/components/atoms/NoahLogo';
+	import { SearchFieldCompact } from '$lib/components/atoms/SearchField';
+	import { UserMenu } from '$lib/components/molecules/UserMenu';
+	import { Sidebar } from '$lib/components/organisms/Sidebar';
+	import type { Company, MiniApp } from '$lib/types';
+	import { onMount } from 'svelte';
 
   // Props
-  let { companies = [], miniApps = [], children = {} } = $props<{
+  let { companies = [], miniApps = [], miniapp, defaultMiniapp } = $props<{
     companies: Company[];
     miniApps: MiniApp[];
-    children: {
-      default?: () => any;
-      miniapp?: (miniApp: MiniApp) => any;
-    };
+    defaultMiniapp?: () => any;
+    miniapp?: (miniApp: MiniApp) => any;
   }>();
 
   // State
@@ -48,6 +47,12 @@
       window.removeEventListener('resize', handleResize);
       observer.disconnect();
     };
+  });
+
+ $effect(() => {
+    const currentPath = $page.url.pathname;
+  
+    currentMiniApp = miniApps.find((app: MiniApp) => app.path === currentPath) || null;
   });
 
   // Functions
@@ -183,10 +188,10 @@
 
   <!-- Main Content -->
   <main class="main-content overflow-auto bg-background dark:bg-gray-900">
-    {#if currentMiniApp && children.miniapp}
-      {@render children.miniapp(currentMiniApp)}
-    {:else if children.default}
-      {@render children.default()}
+    {#if currentMiniApp && miniapp}
+      {@render miniapp()}
+    {:else if defaultMiniapp}
+      {@render defaultMiniapp()}
     {:else}
       <div class="flex items-center justify-center h-full">
         <p class="text-gray-500 dark:text-gray-400">Selecione uma empresa para começar</p>

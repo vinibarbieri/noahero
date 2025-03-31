@@ -1,0 +1,76 @@
+import { Meta, Story, Canvas, Controls, Primary } from '@storybook/blocks';
+import * as HeroTextStories from './HeroText.stories.svelte';
+
+<Meta of={HeroTextStories} />
+
+# HeroText
+
+O componente `HeroText` exibe um texto fixo "As empresas que você ama" seguido por um texto rotativo com efeitos de animação sofisticados. É ideal para seções hero de landing pages onde você deseja destacar diferentes benefícios ou características do seu produto de forma dinâmica e atraente.
+
+## Exemplo Básico
+
+<Primary />
+
+## Propriedades
+
+<Controls />
+
+## Como Usar
+
+```svelte
+<script>
+  import { HeroText } from '$lib/components/molecules/HeroText';
+</script>
+
+<HeroText className="my-8" delay={800} />
+```
+
+## Detalhes de Implementação
+
+O componente `HeroText` combina:
+
+1. Um texto fixo "As empresas que você ama"
+2. Um texto rotativo que alterna entre as frases:
+   - "melhores ainda"
+   - "com muito mais vantagem"
+   - "te dando muita economia"
+   - "com itens exclusivos"
+
+### Efeitos Visuais Aprimorados
+
+- **Sequência de Animações**: O componente utiliza uma sequência coreografada de animações para criar um efeito visual impactante
+- **Múltiplos Efeitos de Transição**: Combinação de efeitos `scale`, `fly` e `fade` para transições suaves e elegantes
+- **Fundo Gradiente Animado**: Um gradiente nas cores primárias da aplicação com efeito de pulsação
+- **Efeito de Brilho Dinâmico**: Um efeito de blur animado que entra com escala para criar profundidade
+- **Efeito Hover Aprimorado**: Transição suave de escala e sombra ao passar o mouse sobre o texto rotativo
+- **Animação de Caracteres**: O texto rotativo anima cada caractere individualmente com timing preciso
+
+### Responsividade
+
+O componente é totalmente responsivo e se adapta a diferentes tamanhos de tela:
+
+- **Mobile**: Tamanho de fonte reduzido e espaçamento ajustado
+- **Tablet**: Tamanho médio com altura ajustada
+- **Desktop**: Tamanho maior para melhor impacto visual
+
+## Variantes
+
+### Com Classes Personalizadas
+
+<Canvas of={HeroTextStories.WithCustomClasses} />
+
+Esta variante demonstra como você pode personalizar ainda mais o componente usando classes CSS adicionais.
+
+### Com Atraso Maior
+
+<Canvas of={HeroTextStories.WithLongerDelay} />
+
+Esta variante demonstra como você pode controlar o timing das animações ajustando o parâmetro `delay`.
+
+## Acessibilidade
+
+O componente mantém boas práticas de acessibilidade:
+
+- Contraste adequado entre texto e fundo
+- Animações suaves que não causam distração excessiva
+- Texto legível em todos os tamanhos de tela

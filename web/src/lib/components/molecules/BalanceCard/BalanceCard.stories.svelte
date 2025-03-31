@@ -1,6 +1,5 @@
 <script context="module" lang="ts">
   import { defineMeta, type Args } from '@storybook/addon-svelte-csf';
-  import { fn } from '@storybook/test';
   import BalanceCard from './BalanceCard.svelte';
 
   // Dados de exemplo para vouchers
@@ -27,7 +26,7 @@
       value: 120
     }
   ];
-  
+
   // Dados de exemplo para transações
   const exampleTransactions = [
     {
@@ -95,10 +94,7 @@
         control: 'boolean',
         description: 'Indica se o usuário é proprietário (mostra todas as transações) ou não (mostra apenas suas transações)'
       },
-      cardNumber: {
-        control: 'text',
-        description: 'Últimos 4 dígitos do cartão'
-      }
+
     },
     parameters: {
       docs: {
@@ -106,9 +102,9 @@
           component: `
             O componente BalanceCard é usado para exibir o saldo de vouchers disponíveis para o usuário ou empresa.
             Ao clicar no card, um dialog detalhado é aberto mostrando informações adicionais sobre o saldo, vouchers disponíveis e transações.
-            
+
             ### Características
-            
+
             - Design compacto e limpo
             - Formatação automática de valores monetários
             - Suporte a diferentes moedas
@@ -117,9 +113,9 @@
             - Adaptável a diferentes tamanhos
             - Interativo com abertura de dialog detalhado ao clicar
             - Visualização diferenciada para usuário comum e proprietário
-            
+
             ### Uso
-            
+
             \`\`\`svelte
             <BalanceCard
               balance={4259.32}
@@ -129,7 +125,7 @@
               percentChange={3.5}
               valueChange={150}
               isOwner={false}
-              cardNumber="4567"
+
               vouchers={vouchers}
               transactions={transactions}
             />
@@ -163,7 +159,7 @@
     percentChange: 3.5,
     valueChange: 150,
     isOwner: false,
-    cardNumber: "4567",
+
     vouchers: exampleVouchers,
     transactions: exampleTransactions
   }}
@@ -180,7 +176,7 @@
     percentChange: 5.2,
     valueChange: 780,
     isOwner: true,
-    cardNumber: "4567",
+
     vouchers: exampleVouchers,
     transactions: exampleTransactions
   }}
@@ -197,7 +193,7 @@
     percentChange: -2.5,
     valueChange: -90,
     isOwner: false,
-    cardNumber: "4567",
+
     vouchers: exampleVouchers,
     transactions: exampleTransactions
   }}
@@ -214,7 +210,7 @@
     percentChange: 3.5,
     valueChange: 150,
     isOwner: false,
-    cardNumber: "4567",
+
     vouchers: exampleVouchers,
     transactions: exampleTransactions
   }}
@@ -231,7 +227,7 @@
     percentChange: 3.5,
     valueChange: 150,
     isOwner: false,
-    cardNumber: "4567",
+
     vouchers: exampleVouchers,
     transactions: exampleTransactions
   }}

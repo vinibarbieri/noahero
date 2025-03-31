@@ -5,13 +5,27 @@
     isOpen = false,
     title = '',
     onClose,
-    children
+    children,
+    size = 'md'
   } = $props<{
     isOpen: boolean;
     title?: string;
     onClose?: () => void;
     children?: any;
+    size?: 'sm' | 'md' | 'lg' | 'xl' | 'full';
   }>();
+
+  // Determinar a classe de largura com base no tamanho
+  function getSizeClass(size: string): string {
+    switch (size) {
+      case 'sm': return 'max-w-sm';
+      case 'md': return 'max-w-md';
+      case 'lg': return 'max-w-lg';
+      case 'xl': return 'max-w-xl';
+      case 'full': return 'max-w-full';
+      default: return 'max-w-md';
+    }
+  }
 
   // Estado interno
   let startY = $state(0);
@@ -194,21 +208,27 @@
 
     <!-- Dialog content -->
     <div
-      class="dialog-content bg-white/95 dark:bg-gray-800/95 rounded-t-lg sm:rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-hidden flex flex-col relative z-10 {!isDragging && (isClosing ? 'animate-slide-down' : 'animate-slide-up')}"
+      class="dialog-content bg-white/95 dark:bg-gray-800/95 rounded-t-lg sm:rounded-lg shadow-xl {getSizeClass(size)} w-full max-h-[90vh] overflow-hidden flex flex-col relative z-10 {!isDragging && (isClosing ? 'animate-slide-down' : 'animate-slide-up')}"
       style="transform: translateY({translateY}px); opacity: {dialogOpacity}; transition: {isDragging ? 'none' : 'transform 0.3s ease-out, opacity 0.3s ease-out'};"
       role="dialog"
       aria-modal="true"
       aria-labelledby="dialog-title"
-      ontouchstart={handleTouchStart}
-      ontouchmove={handleTouchMove}
-      ontouchend={handleTouchEnd}
     >
       <!-- Header -->
-      <div class="flex items-center justify-between p-4 border-b border-gray-200/70 dark:border-gray-700/70">
+      <div
+        class="flex items-center justify-between p-4 border-b border-gray-200/70 dark:border-gray-700/70 cursor-move relative overflow-hidden"
+        ontouchstart={handleTouchStart}
+        ontouchmove={handleTouchMove}
+        ontouchend={handleTouchEnd}
+      >
+        <!-- Efeito de brilho sutil para indicar que é arrastável (apenas em mobile) -->
+        {#if isMobile}
+          <div class="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent pointer-events-none"></div>
+        {/if}
         <!-- Drag indicator for mobile -->
         {#if isMobile}
-          <div class="absolute top-2 left-0 right-0 flex justify-center">
-            <div class="w-16 h-1.5 bg-gray-300 dark:bg-gray-600 rounded-full"></div>
+          <div class="absolute top-2 left-0 right-0 flex justify-center pointer-events-none">
+            <div class="w-16 h-1.5 bg-gray-300 dark:bg-gray-600 rounded-full transition-all duration-300 {isDragging ? 'w-20 bg-primary-400 dark:bg-primary-600' : ''}"></div>
           </div>
         {/if}
 

@@ -1,5 +1,6 @@
 <script lang="ts">
   import { BalanceDialog } from '$lib/components/organisms/BalanceDialog';
+  import { getUserContext } from '$lib/contexts/UserContext';
   import { formatCurrency } from '$lib/utils/formatters';
 
   // Props
@@ -11,7 +12,6 @@
     percentChange = 0,
     valueChange = 0,
     isOwner = false,
-    cardNumber = '4567',
     vouchers = [],
     transactions = []
   } = $props<{
@@ -22,7 +22,7 @@
     percentChange?: number;
     valueChange?: number;
     isOwner?: boolean;
-    cardNumber?: string;
+
     vouchers?: Array<{
       id: string;
       name: string;
@@ -46,6 +46,32 @@
 
   // Estado local
   let isDialogOpen = $state(false);
+
+  // Obter o contexto do usuário
+  const userContext = getUserContext();
+  let contextIsOwner = $state(false);
+
+  // Subscrever às mudanças no contexto
+  $effect(() => {
+    const unsubscribe = userContext.isOwner.subscribe(value => {
+      contextIsOwner = value;
+      console.log('BalanceCard contextIsOwner atualizado:', contextIsOwner);
+    });
+
+    return unsubscribe;
+  });
+
+  // Determinar se é proprietário com base no contexto ou no prop
+  $effect(() => {
+    // Se isOwner for explicitamente passado como prop, ele tem prioridade
+    // Caso contrário, usamos o valor do contexto
+    if (isOwner !== undefined) {
+      console.log('BalanceCard usando isOwner do prop:', isOwner);
+    } else {
+      isOwner = contextIsOwner;
+      console.log('BalanceCard usando isOwner do contexto:', isOwner);
+    }
+  });
 
   // Abrir o dialog
   function openDialog() {
@@ -90,7 +116,7 @@
   percentChange={percentChange}
   valueChange={valueChange}
   isOwner={isOwner}
-  cardNumber={cardNumber}
+
   vouchers={vouchers}
   transactions={transactions}
 />

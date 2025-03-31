@@ -1,8 +1,11 @@
 <script lang="ts">
+  import { CheckoutDialog } from '$lib/components/molecules/CheckoutDialog';
   import FullPageDialog from '$lib/components/molecules/FullPageDialog/FullPageDialog.svelte';
   import { TransactionList } from '$lib/components/molecules/TransactionList';
   import { VoucherCarousel } from '$lib/components/molecules/VoucherCarousel';
   import { VoucherGrid } from '$lib/components/molecules/VoucherGrid';
+  import { VoucherSummaryCard } from '$lib/components/molecules/VoucherSummaryCard';
+  import { VoucherManagementDialog } from '$lib/components/organisms/VoucherManagementDialog';
   import { getVoucherContext } from '$lib/contexts/VoucherContext';
   import { formatCurrency } from '$lib/utils/formatters';
 
@@ -15,7 +18,6 @@
     percentChange = 0,
     valueChange = 0,
     isOwner = false,
-    cardNumber = '4567',
     vouchers = [],
     transactions = []
   } = $props<{
@@ -26,7 +28,7 @@
     percentChange?: number;
     valueChange?: number;
     isOwner?: boolean;
-    cardNumber?: string;
+
     vouchers?: Array<{
       id: string;
       name: string;
@@ -50,6 +52,44 @@
 
   // Estado local
   let activeTab = $state('vouchers');
+  let isCheckoutDialogOpen = $state(false);
+  let isVoucherManagementDialogOpen = $state(false);
+
+  // API key de exemplo (em produção, isso viria do backend)
+  const apiKey = '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';
+
+  // Calcular o valor total dos vouchers
+  let totalVoucherValue = $derived(vouchers.reduce((total: number, voucher: any) => total + (voucher.price || 0), 0));
+
+  // Log para depuração
+  console.log('BalanceDialog isOwner:', isOwner);
+
+  // Efeito para atualizar quando o dialog é aberto
+  $effect(() => {
+    if (isOpen) {
+      console.log('BalanceDialog aberto com isOwner:', isOwner);
+    }
+  });
+
+  // Abrir o dialog de checkout
+  function openCheckoutDialog() {
+    isCheckoutDialogOpen = true;
+  }
+
+  // Fechar o dialog de checkout
+  function closeCheckoutDialog() {
+    isCheckoutDialogOpen = false;
+  }
+
+  // Abrir o dialog de gerenciamento de vouchers
+  function openVoucherManagementDialog() {
+    isVoucherManagementDialogOpen = true;
+  }
+
+  // Fechar o dialog de gerenciamento de vouchers
+  function closeVoucherManagementDialog() {
+    isVoucherManagementDialogOpen = false;
+  }
 
   // Obter o contexto de vouchers
   const voucherContext = getVoucherContext();
@@ -75,10 +115,7 @@
     }
   });
 
-  // Formatar número de cartão
-  function formatCardNumber(number: string): string {
-    return `•••• •••• •••• ${number}`;
-  }
+
 
   // Determinar a cor do percentual de mudança
   function getChangeColor(value: number): string {
@@ -104,27 +141,32 @@
 >
   <div class="flex flex-col h-full">
     <!-- Cabeçalho com saldo -->
-    <div class="bg-gradient-to-r from-purple-100 to-blue-100 dark:from-purple-900/30 dark:to-blue-900/30 rounded-xl p-5 mb-6">
-      <div class="text-sm text-gray-600 dark:text-gray-300 mb-1">Saldo da Conta</div>
-      <div class="flex items-baseline">
+    <div class="bg-gradient-to-r from-purple-100 to-blue-100 dark:from-purple-900/40 dark:to-blue-900/40 rounded-xl p-5 mb-6 shadow-sm dark:shadow-md">
+      <div class="text-sm text-gray-600 dark:text-gray-300 mb-2">
+        {#if isOwner}
+          Saldo disponível para cashback
+        {:else}
+          Coins Disponíveis
+        {/if}
+      </div>
+      <div class="flex items-baseline mb-3">
         <div class="text-3xl font-bold text-gray-900 dark:text-white">{formatCurrency(balance, currency)}</div>
-        <button class="ml-2 text-gray-500 dark:text-gray-400" aria-label="Mostrar saldo">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-            <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-            <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" />
-          </svg>
+      </div>
+
+      <!-- Botão de Recarregar/Comprar -->
+      <div class="mb-3">
+        <button
+          class="px-4 py-2 bg-primary-600 hover:bg-primary-700 dark:bg-primary-700 dark:hover:bg-primary-800 text-white rounded-lg text-sm font-medium transition-colors shadow-sm hover:shadow"
+          onclick={() => openCheckoutDialog()}
+        >
+          {#if isOwner}
+            Recarregar
+          {:else}
+            Comprar
+          {/if}
         </button>
       </div>
-      <div class="flex items-center mt-1">
-        <div class="text-sm font-medium text-gray-600 dark:text-gray-300">{formatCardNumber(cardNumber)}</div>
-        <button class="ml-2 text-gray-500 dark:text-gray-400" aria-label="Copiar número do cartão">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-            <path d="M8 2a1 1 0 000 2h2a1 1 0 100-2H8z" />
-            <path d="M3 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v6h-4.586l1.293-1.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L10.414 13H15v3a2 2 0 01-2 2H5a2 2 0 01-2-2V5zM15 11h2a1 1 0 110 2h-2v-2z" />
-          </svg>
-        </button>
-      </div>
-      <div class="flex items-center mt-2">
+      <div class="flex items-center">
         <div class="text-sm font-medium {getChangeColor(valueChange)}">
           {valueChange > 0 ? '+' : ''}{formatCurrency(valueChange, currency)}
         </div>
@@ -154,24 +196,35 @@
 
     <!-- Conteúdo das abas -->
     {#if activeTab === 'vouchers'}
-      <!-- Vouchers (Featured) -->
-      <div class="md:hidden">
-        <VoucherCarousel
-          vouchers={vouchers}
-          title="NFTs Disponíveis"
-          onVoucherClick={(id) => console.log('NFT clicado:', id)}
-          onSeeMore={() => console.log('Ver mais NFTs')}
+      {#if isOwner}
+        <!-- Resumo de Vouchers para proprietário -->
+        <VoucherSummaryCard
+          totalValue={totalVoucherValue}
+          currency={currency}
+          activeVouchers={vouchers.length}
+          apiKey={apiKey}
+          onManageVouchers={openVoucherManagementDialog}
         />
-      </div>
-      <div class="hidden md:block">
-        <VoucherGrid
-          vouchers={vouchers}
-          title="NFTs Disponíveis"
-          columns={3}
-          onVoucherClick={(id: string) => console.log('NFT clicado:', id)}
-          onSeeMore={() => console.log('Ver mais NFTs')}
-        />
-      </div>
+      {:else}
+        <!-- Vouchers (Featured) para usuário comum -->
+        <div class="md:hidden">
+          <VoucherCarousel
+            vouchers={vouchers}
+            title="NFTs Disponíveis"
+            onVoucherClick={(id) => console.log('NFT clicado:', id)}
+            onSeeMore={() => console.log('Ver mais NFTs')}
+          />
+        </div>
+        <div class="hidden md:block">
+          <VoucherGrid
+            vouchers={vouchers}
+            title="NFTs Disponíveis"
+            columns={3}
+            onVoucherClick={(id: string) => console.log('NFT clicado:', id)}
+            onSeeMore={() => console.log('Ver mais NFTs')}
+          />
+        </div>
+      {/if}
     {:else}
       <!-- Transações (Top Collection) -->
       <TransactionList
@@ -184,3 +237,25 @@
     {/if}
   </div>
 </FullPageDialog>
+
+<!-- Checkout Dialog -->
+<CheckoutDialog
+  isOpen={isCheckoutDialogOpen}
+  onClose={closeCheckoutDialog}
+  isOwner={isOwner}
+  currency={currency}
+  onConfirm={(amount) => {
+    // Aqui você pode implementar a lógica para adicionar o valor ao saldo
+    console.log(`Adicionando ${amount} ${currency} ao saldo`);
+  }}
+/>
+
+<!-- Voucher Management Dialog -->
+<VoucherManagementDialog
+  isOpen={isVoucherManagementDialogOpen}
+  onClose={closeVoucherManagementDialog}
+  vouchers={vouchers}
+  transactions={transactions}
+  currency={currency}
+  totalValue={totalVoucherValue}
+/>
