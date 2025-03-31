@@ -1,13 +1,14 @@
 <script lang="ts">
-  import { CheckoutDialog } from '$lib/components/molecules/CheckoutDialog';
-  import FullPageDialog from '$lib/components/molecules/FullPageDialog/FullPageDialog.svelte';
-  import { TransactionList } from '$lib/components/molecules/TransactionList';
-  import { VoucherCarousel } from '$lib/components/molecules/VoucherCarousel';
-  import { VoucherGrid } from '$lib/components/molecules/VoucherGrid';
-  import { VoucherSummaryCard } from '$lib/components/molecules/VoucherSummaryCard';
-  import { VoucherManagementDialog } from '$lib/components/organisms/VoucherManagementDialog';
-  import { getVoucherContext } from '$lib/contexts/VoucherContext';
-  import { formatCurrency } from '$lib/utils/formatters';
+	import { API_KEY_MOCK } from '$env/static/private';
+	import { CheckoutDialog } from '$lib/components/molecules/CheckoutDialog';
+	import FullPageDialog from '$lib/components/molecules/FullPageDialog/FullPageDialog.svelte';
+	import { TransactionList } from '$lib/components/molecules/TransactionList';
+	import { VoucherCarousel } from '$lib/components/molecules/VoucherCarousel';
+	import { VoucherGrid } from '$lib/components/molecules/VoucherGrid';
+	import { VoucherSummaryCard } from '$lib/components/molecules/VoucherSummaryCard';
+	import { VoucherManagementDialog } from '$lib/components/organisms/VoucherManagementDialog';
+	import { getVoucherContext } from '$lib/contexts/VoucherContext';
+	import { formatCurrency } from '$lib/utils/formatters';
 
   // Props
   let {
@@ -56,7 +57,7 @@
   let isVoucherManagementDialogOpen = $state(false);
 
   // API key de exemplo (em produção, isso viria do backend)
-  const apiKey = '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';
+  const apiKey = API_KEY_MOCK  
 
   // Calcular o valor total dos vouchers
   let totalVoucherValue = $derived(vouchers.reduce((total: number, voucher: any) => total + (voucher.price || 0), 0));
