@@ -1,6 +1,6 @@
 use cosmwasm_schema::write_api;
 
-use xion_nft::msg::{ExecuteMsg, InstantiateMsg, QueryMsg};
+use nft-voucher::msg::{ExecuteMsg, InstantiateMsg, QueryMsg};
 
 fn main() {
     write_api! {
