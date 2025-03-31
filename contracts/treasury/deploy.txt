@@ -1,0 +1,40 @@
+
+=====INSTANCIA O CONTRATO TREASURY============
+xiond tx wasm instantiate 251 '{"admin":"xion1hyvx9s4y87x87wqu9v6sa64dlfggq3wynp0z5s"}' \
+  --label "treasury contract" \
+  --from wallet1 \
+  --chain-id xion-testnet-2 \
+  --gas-adjustment 1.3 \
+  --gas auto \
+  --gas-prices 0.025uxion \
+  --node https://rpc.xion-testnet-2.burnt.com:443 \
+  --no-admin \
+  -y
+
+=====ADICIONA O CONTRATO DE NFT============
+xiond tx wasm execute xion1vxweqf08tt22w4ud0gpspygxv97x5vga9jkdyqp97z0eqsr8gyds2m9yv3 \
+  '{"add_nft_contract":{"contract_addr":"xion1lsct26n5980s6zckajjxq80gn9z0ywgruen06narna6n62wuwtwqaw9ssp"}}' \
+  --from wallet1 \
+  --gas auto --gas-adjustment 1.3 --gas-prices 0.025uxion \
+  --chain-id xion-testnet-2 \
+  --node https://rpc.xion-testnet-2.burnt.com:443 \
+  -y
+
+
+======MINT PELO TREASURY=======
+xiond tx wasm execute <ENDERECO_TREASURY> \
+  '{
+    "mint_nft": {
+      "contract_addr": "xion1lsct26n5980s6zckajjxq80gn9z0ywgruen06narna6n62wuwtwqaw9ssp",
+      "token_id": "<ID_DO_TOKEN>",
+      "owner": "<ENDERECO_DO_NOVO_DONO>",
+      "token_uri": "<URL_DO_METADATA>",
+      "extension": {}
+    }
+  }' \
+  --from wallet1 \
+  --chain-id xion-testnet-2 \
+  --gas auto --gas-adjustment 1.3 \
+  --gas-prices 0.025uxion \
+  --node https://rpc.xion-testnet-2.burnt.com:443 \
+  -y

@@ -1,0 +1,1 @@
+feb48ce29f341662ae0d909dd83fa4796dc3b739fb45a339a7ff57b7002a0310  treasury.wasm

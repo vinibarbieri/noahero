@@ -1,58 +1,12 @@
-[package]
-name = "xion_nft"
-version = "0.1.0"
-authors = ["vinibarbieri <vinicius190702@hotmail.com>"]
-edition = "2021"
+[workspace]
+members = [
+  "nft-voucher",
+  "treasury"
+]
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+# Isso é importante para resolver dependências corretamente no optimizer
+resolver = "2"
 
-[lib]
-crate-type = ["cdylib", "rlib"]
-
-[profile.release]
-opt-level = 3
-debug = false
-rpath = false
-lto = true
-debug-assertions = false
-codegen-units = 1
-panic = 'abort'
-incremental = false
-overflow-checks = true
-
-[features]
-default = ["entry"]
-entry = []
-library = []
-
-
-[package.metadata.scripts]
-optimize = """docker run --rm -v "$(pwd)":/code \
-  --mount type=volume,source="$(basename "$(pwd)")_cache",target=/target \
-  --mount type=volume,source=registry_cache,target=/usr/local/cargo/registry \
-  cosmwasm/optimizer:0.16.0
-"""
-
-[dependencies]
-cosmwasm-schema = "2.2.0"
-cosmwasm-std = { version = "2.2.0", features = [
-  "cosmwasm_1_4",
-  # Enable this if you only deploy to chains that have CosmWasm 2.0 or higher
-  # "cosmwasm_2_0",
-  # Or this if you only deploy to chains that have CosmWasm 2.1 or higher
-  # "cosmwasm_2_1",
-] }
-cw-storage-plus = "2.0.0"
-cw2 = "2.0.0"
-schemars = "0.8.16"
-serde = { version = "1.0.197", default-features = false, features = ["derive"] }
-thiserror = { version = "1.0.58" }
-
-cw721 = { git = "https://github.com/public-awesome/cw-nfts.git", package = "cw721" }
-cw721-base = { git = "https://github.com/public-awesome/cw-nfts.git", package = "cw721-base" }
-
-
-
-[dev-dependencies]
-cw-multi-test = "2.0.0"
-
+[workspace.metadata.optimizer]
+# Lista os contratos a serem otimizados
+contracts = ["treasury"]
