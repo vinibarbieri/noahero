@@ -13,7 +13,7 @@ xiond tx wasm instantiate 251 '{"admin":"xion1hyvx9s4y87x87wqu9v6sa64dlfggq3wynp
 
 =====ADICIONA O CONTRATO DE NFT============
 xiond tx wasm execute xion1vxweqf08tt22w4ud0gpspygxv97x5vga9jkdyqp97z0eqsr8gyds2m9yv3 \
-  '{"add_nft_contract":{"contract_addr":"xion1lsct26n5980s6zckajjxq80gn9z0ywgruen06narna6n62wuwtwqaw9ssp"}}' \
+  '{"add_nft_contract":{"contract_addr":"xion166wlvejtp7pjmjr53erqz9kuzyscdrgpjg3dm95zvanus4zwzyzsedmkam"}}' \
   --from wallet1 \
   --gas auto --gas-adjustment 1.3 --gas-prices 0.025uxion \
   --chain-id xion-testnet-2 \
@@ -22,14 +22,22 @@ xiond tx wasm execute xion1vxweqf08tt22w4ud0gpspygxv97x5vga9jkdyqp97z0eqsr8gyds2
 
 
 ======MINT PELO TREASURY=======
-xiond tx wasm execute <ENDERECO_TREASURY> \
+xiond tx wasm execute xion1vxweqf08tt22w4ud0gpspygxv97x5vga9jkdyqp97z0eqsr8gyds2m9yv3 \
   '{
     "mint_nft": {
-      "contract_addr": "xion1lsct26n5980s6zckajjxq80gn9z0ywgruen06narna6n62wuwtwqaw9ssp",
-      "token_id": "<ID_DO_TOKEN>",
-      "owner": "<ENDERECO_DO_NOVO_DONO>",
-      "token_uri": "<URL_DO_METADATA>",
-      "extension": {}
+      "contract_addr": "xion166wlvejtp7pjmjr53erqz9kuzyscdrgpjg3dm95zvanus4zwzyzsedmkam",
+      "token_id": "voucher002",
+      "owner": "xion1hyvx9s4y87x87wqu9v6sa64dlfggq3wynp0z5s",
+      "token_uri": "https://brown-obliged-albatross-730.mypinata.cloud/ipfs/bafkreihvqkngnun3334j2v2tdvjjnxvnaij4lwjlrcd26bslimqgwjg42a",
+      "extension": {
+        "store_id": "store-123",
+        "original_owner": "xion1hyvx9s4y87x87wqu9v6sa64dlfggq3wynp0z5s",
+        "expiration_date": "1767150001",
+        "value": "100",
+        "receipt_id": "rec-789",
+        "used": false,
+        "token_uri": "https://brown-obliged-albatross-730.mypinata.cloud/ipfs/bafkreihvqkngnun3334j2v2tdvjjnxvnaij4lwjlrcd26bslimqgwjg42a"
+      }
     }
   }' \
   --from wallet1 \
@@ -38,3 +46,21 @@ xiond tx wasm execute <ENDERECO_TREASURY> \
   --gas-prices 0.025uxion \
   --node https://rpc.xion-testnet-2.burnt.com:443 \
   -y
+
+
+{
+  "mint_nft": {
+    "contract_addr": "xion1...nftcontract",
+    "token_id": "voucher001",
+    "owner": "xion1...user",
+    "token_uri": "https://.../voucher001.json",
+    "extension": {
+      "store_id": "store-123",
+      "original_owner": "xion1hyvx9s4y87x87wqu9v6sa64dlfggq3wynp0z5s",
+      "expiration": "2025-12-31",
+      "value": "100",
+      "receipt_id": "rec-789",
+      "used": false
+    }
+  }
+}
