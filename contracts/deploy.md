@@ -29,7 +29,7 @@ RES=$(xiond tx wasm store ./artifacts/nft_voucher.wasm \
 ===========EXTRACT THE TX HASH===========
 echo $RES
 
-nft-voucher = 3FBB7F4CDEB8F55C78B1131F37F49246D29AF4FDB1CE0F737B78F4B6FDB3E523
+nft-voucher = C0482A09505332DAE90EF430F9CF4750474CE0B1DF619884BD74D9D640964B22
 
 ===========SET TXHASH===========
 TXHASH="your-txhash-here"
@@ -42,7 +42,7 @@ CODE_ID=$(xiond query tx $TXHASH \
 ===========PRINT CODE ID===========
 echo $CODE_ID
 
-nft-voucher = 261
+nft-voucher = 264
 
 ===========INSTANCIA O CONTRATO TREASURY===========
 xiond tx wasm instantiate 251 '{"admin":"xion1hyvx9s4y87x87wqu9v6sa64dlfggq3wynp0z5s"}' \
@@ -85,7 +85,7 @@ xiond tx wasm instantiate $CODE_ID '{
 ===========GET THE CONTRACT ADDRESS===========
 TXHASH="your-txhash-here" //TXHASH DO INSTANTIATE
 
-nft-voucher = D6D6C3E126858CF42723A90D43DDE1337774027092E5EE09255BF332C5F27D3E
+nft-voucher = A74F188E9951B4F04C8063A06B10C8B9D7F7FAB7283F2514C2C3D2EB40EACE01
 
 CONTRACT=$(xiond query tx $TXHASH \
   --node https://rpc.xion-testnet-2.burnt.com:443 \
@@ -95,11 +95,11 @@ CONTRACT=$(xiond query tx $TXHASH \
 ===========DISPLAY THE CONTRACT ADDRESS===========
 echo $CONTRACT
 
-nft-voucher = xion1wwa0z02ks7k8trhvc8empfn0cd35d6hmp9hm6sdcw0jkr278gxmsvm5tl6
+nft-voucher = xion1klhdqpgm396rl06yc0up0njn0alm2mgejgvedt6qmwlcr29zc3ds66d9lq
 
 ===========ADICIONA O CONTRATO DE NFT===========
 xiond tx wasm execute xion1vxweqf08tt22w4ud0gpspygxv97x5vga9jkdyqp97z0eqsr8gyds2m9yv3 \
-  '{"add_nft_contract":{"contract_addr":"xion1wwa0z02ks7k8trhvc8empfn0cd35d6hmp9hm6sdcw0jkr278gxmsvm5tl6"}}' \
+  '{"add_nft_contract":{"contract_addr":"xion1klhdqpgm396rl06yc0up0njn0alm2mgejgvedt6qmwlcr29zc3ds66d9lq"}}' \
   --from wallet1 \
   --gas auto --gas-adjustment 1.3 --gas-prices 0.025uxion \
   --chain-id xion-testnet-2 \
@@ -110,8 +110,8 @@ xiond tx wasm execute xion1vxweqf08tt22w4ud0gpspygxv97x5vga9jkdyqp97z0eqsr8gyds2
 xiond tx wasm execute xion1vxweqf08tt22w4ud0gpspygxv97x5vga9jkdyqp97z0eqsr8gyds2m9yv3 \
   '{
     "mint_nft": {
-      "contract_addr": "xion1wwa0z02ks7k8trhvc8empfn0cd35d6hmp9hm6sdcw0jkr278gxmsvm5tl6",
-      "token_id": "voucher002",
+      "contract_addr": "xion1klhdqpgm396rl06yc0up0njn0alm2mgejgvedt6qmwlcr29zc3ds66d9lq",
+      "token_id": "voucher001",
       "owner": "xion1hyvx9s4y87x87wqu9v6sa64dlfggq3wynp0z5s",
       "token_uri": "https://brown-obliged-albatross-730.mypinata.cloud/ipfs/bafkreihvqkngnun3334j2v2tdvjjnxvnaij4lwjlrcd26bslimqgwjg42a",
       "extension": {
@@ -133,18 +133,18 @@ xiond tx wasm execute xion1vxweqf08tt22w4ud0gpspygxv97x5vga9jkdyqp97z0eqsr8gyds2
   -y
 
 ===========VER OS TOKENS DA WALLET===========
-xiond query wasm contract-state smart xion1wwa0z02ks7k8trhvc8empfn0cd35d6hmp9hm6sdcw0jkr278gxmsvm5tl6 '{
+xiond query wasm contract-state smart xion1klhdqpgm396rl06yc0up0njn0alm2mgejgvedt6qmwlcr29zc3ds66d9lq '{
   "tokens": {
-    "owner": "xion1hyvx9s4y87x87wqu9v6sa64dlfggq3wynp0z5s"
+    "owner": "xion1gpfvcqd76d6hfhqh33u4qd6k4608juf5mvcff6"
   }
 }' \
 --node https://rpc.xion-testnet-2.burnt.com:443
 
 ===========APROVAR O TREASURY PARA TRANSFERIR NFT===========
-xiond tx wasm execute xion1wwa0z02ks7k8trhvc8empfn0cd35d6hmp9hm6sdcw0jkr278gxmsvm5tl6 '{
+xiond tx wasm execute xion1klhdqpgm396rl06yc0up0njn0alm2mgejgvedt6qmwlcr29zc3ds66d9lq '{
   "approve": {
     "spender": "xion1vxweqf08tt22w4ud0gpspygxv97x5vga9jkdyqp97z0eqsr8gyds2m9yv3",
-    "token_id": "voucher002"
+    "token_id": "voucher001"
   }
 }' \
 --from wallet1 \
@@ -157,8 +157,8 @@ xiond tx wasm execute xion1wwa0z02ks7k8trhvc8empfn0cd35d6hmp9hm6sdcw0jkr278gxmsv
 ===========TRANSFERIR NFT PELO TREASURY===========
 xiond tx wasm execute xion1vxweqf08tt22w4ud0gpspygxv97x5vga9jkdyqp97z0eqsr8gyds2m9yv3 '{
   "transfer_nft": {
-    "contract_addr": "xion166wlvejtp7pjmjr53erqz9kuzyscdrgpjg3dm95zvanus4zwzyzsedmkam",
-    "token_id": "voucher002",
+    "contract_addr": "xion1klhdqpgm396rl06yc0up0njn0alm2mgejgvedt6qmwlcr29zc3ds66d9lq",
+    "token_id": "voucher001",
     "new_owner": "xion1gpfvcqd76d6hfhqh33u4qd6k4608juf5mvcff6"
   }
 }' \
@@ -169,3 +169,35 @@ xiond tx wasm execute xion1vxweqf08tt22w4ud0gpspygxv97x5vga9jkdyqp97z0eqsr8gyds2
 --gas-prices 0.025uxion \
 --node https://rpc.xion-testnet-2.burnt.com:443 \
 -y
+
+
+===========TESTAR TRANSFERENCIA DIRETA ENTRE USUARIOS===========
+xiond tx wasm execute xion1klhdqpgm396rl06yc0up0njn0alm2mgejgvedt6qmwlcr29zc3ds66d9lq '{
+  "transfer_nft": {
+    "recipient": "xion1hyvx9s4y87x87wqu9v6sa64dlfggq3wynp0z5s",
+    "token_id": "voucher001"
+  }
+}' \
+--from wallet2 \
+--chain-id xion-testnet-2 \
+--gas auto --gas-adjustment 1.3 --gas-prices 0.025uxion \
+--node https://rpc.xion-testnet-2.burnt.com:443 \
+-y
+
+
+
+
+xiond query wasm contract-state smart xion1klhdqpgm396rl06yc0up0njn0alm2mgejgvedt6qmwlcr29zc3ds66d9lq '{"nft_info": {"token_id": "voucher003"}}' \
+--node https://rpc.xion-testnet-2.burnt.com:443
+
+
+
+TRANSFERIR TOKENS
+xiond tx bank send xion1gpfvcqd76d6hfhqh33u4qd6k4608juf5mvcff6 xion1qcpz57pyy84n45gxkttautswqkja2tn4ehpjkjaclvz2vh9kd2cskgsgkp 1000uxion \
+  --from xion1gpfvcqd76d6hfhqh33u4qd6k4608juf5mvcff6 \
+  --chain-id xion-testnet-2 \
+  --node https://rpc.xion-testnet-2.burnt.com:443 \
+  --gas-prices 0.025uxion \
+  --gas auto \
+  --gas-adjustment 1.3 \
+  -y
