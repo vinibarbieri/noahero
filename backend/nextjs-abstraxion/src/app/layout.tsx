@@ -9,7 +9,7 @@ import "@burnt-labs/ui/dist/index.css";
 const inter = Inter({ subsets: ['latin'] });
 
 const treasuryConfig = {
-  treasury: "xion1cxgjlahuj8u3xarl2av7ed0ljcdvk78t9fhp6xa8fn0jx55umvyq0wkh6g",
+  treasury: "xion1q07js2hj6w83gs9hcc9x57lz8jug5c0f9jcptkdrvvgueuktt7qqqr9p05",
   rpcUrl: "https://rpc.xion-testnet-2.burnt.com/",
   restUrl: "https://api.xion-testnet-2.burnt.com/"
 };

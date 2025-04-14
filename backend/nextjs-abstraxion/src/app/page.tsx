@@ -47,36 +47,68 @@ export default function Page() {
 
   const fetchedNfts = useRef(false); // Garante que só busque os NFTs uma vez
 
+  type VoucherMetadata = {
+    store_id: string;
+    original_owner: string;
+    expiration_date: string;
+    value: string;
+    receipt_id: string;
+    used: boolean;
+    token_uri: string;
+  };
+
+  type MintNftParams = {
+    contractAddr: string;
+    tokenId: string;
+    owner: string;
+    tokenUri?: string; // opcional, pois é Option<String> no Rust
+    extension: VoucherMetadata;
+  };
+
+  type NftMetadata = {
+    id: string;
+    name: string;
+    description: string;
+    image: string;
+    store?: string;
+    value?: string;
+  };
+
+
   // Função para mintar um NFT através do contrato manager
   // O mint é feito através do contrato manager, que chama o cw721
-  const mintNft = async () => {
-    if (!client || !account) return;
+  const mintNft = async ({
+    contractAddr,
+    tokenId,
+    owner,
+    tokenUri,
+    extension,
+  }: MintNftParams) => {
+    if (!client) return;
     setLoading(true);
+
     try {
       const res = await client.execute(
-        account.bech32Address,
+        owner,
         managerContract,
         {
           mint_nft: {
-            contract_addr: nftContract,
+            contract_addr: contractAddr,
             token_id: tokenId,
-            owner: account.bech32Address,
-            token_uri: metadataUri,
-            extension: {
-              store_id: "store-123",
-              original_owner: account.bech32Address,
-              expiration_date: "1767150001",
-              value: "100",
-              receipt_id: "rec-789",
-              used: false,
-              token_uri: metadataUri,
-            },
+            owner,            
+            token_uri: tokenUri ?? null,
+            extension,
           },
         },
         "auto" // Define automaticamente a taxa (gas)
       );
+
       setResult(`✅ Mint realizado! TX: ${res.transactionHash}`);
-      await getMyNfts(); // Atualiza lista de NFTs após mint
+      await getNftsByOwner({
+        contractAddr: nftContract,
+        ownerAddress: account.bech32Address,
+        setResult: setNfts,
+      }); // Atualiza lista de NFTs após mint
     } catch (err) {
       console.error(err);
       setResult("❌ Erro ao mintar NFT.");
@@ -86,22 +118,34 @@ export default function Page() {
   };
 
   // Função para aprovar o contrato manager a transferir um NFT
-  const approveNft = async () => {
-    if (!client || !account) return;
+  const approveNft = async ({
+    tokenId,
+    owner,
+    spender,
+    contractAddr,
+  }: {
+    tokenId: string;
+    owner: string;
+    spender: string;
+    contractAddr: string;
+  }) => {
+    if (!client) return;
     setLoading(true);
+
     try {
       const res = await client.execute(
-        account.bech32Address,
-        nftContract,
+        owner,
+        contractAddr,
         {
           approve: {
-            spender: managerContract,
+            spender,
             token_id: tokenId,
           },
         },
         "auto"
       );
-      setResult(`✅ Approve realizado! TX: ${res.transactionHash}`);
+      
+      setResult(`✅ Approve realizado com sucesso! TX: ${res.transactionHash}`);
     } catch (err) {
       console.error("Erro no approve:", err);
       setResult("❌ Erro ao aprovar NFT.");
@@ -110,23 +154,38 @@ export default function Page() {
     }
   };
 
+  
+  
+
   // Função que transfere o NFT para outro dono via contrato manager
-  const transferNft = async () => {
-    if (!client || !account) return;
+  const transferNft = async ({
+    tokenId,
+    currentOwner,
+    newOwner,
+    contractAddr,
+  }: {
+    tokenId: string;
+    currentOwner: string;
+    newOwner: string;
+    contractAddr: string;
+  }) => {
+    if (!client) return;
     setLoading(true);
+  
     try {
       const res = await client.execute(
-        account.bech32Address,
+        currentOwner,
         managerContract,
         {
           transfer_nft: {
-            contract_addr: nftContract,
+            contract_addr: contractAddr,
             token_id: tokenId,
             new_owner: newOwner,
           },
         },
         "auto"
       );
+
       setResult(`✅ Transferência realizada! TX: ${res.transactionHash}`);
     } catch (err) {
       console.error("Erro ao transferir NFT:", err);
@@ -135,37 +194,44 @@ export default function Page() {
       setLoading(false);
     }
   };
+  
 
   // Função que consulta os NFTs do usuário
-  const getMyNfts = async () => {
-    if (!queryClient || !account?.bech32Address) return;
+  const getNftsByOwner = async ({
+    contractAddr,
+    ownerAddress,
+    setResult,
+  }: {
+    contractAddr: string;
+    ownerAddress: string;
+    setResult?: (nfts: NftMetadata[]) => void;
+  }): Promise<NftMetadata[] | void> => {
+    if (!queryClient || !ownerAddress) return;
+  
     try {
-      const tokenList = await queryClient.queryContractSmart(nftContract, {
-        tokens: {
-          owner: account.bech32Address,
-        },
+      const tokenList = await queryClient.queryContractSmart(contractAddr, {
+        tokens: { owner: ownerAddress },
       });
-
+  
       console.log("Tokens encontrados:", tokenList.tokens);
-
-      // Para cada token, busca metadados do IPFS e exibe
+  
       const metadataList = await Promise.all(
         tokenList.tokens.map(async (token_id: string) => {
-          const nftInfo = await queryClient.queryContractSmart(nftContract, {
+          const nftInfo = await queryClient.queryContractSmart(contractAddr, {
             nft_info: { token_id },
           });
-
+  
           const metadata = await fetch(nftInfo.token_uri).then((res) =>
             res.json()
           );
-
+  
           const storeAttr = metadata.attributes.find(
             (a: any) => a.trait_type === "Store ID"
           );
           const valueAttr = metadata.attributes.find(
             (a: any) => a.trait_type === "Value"
           );
-
+  
           return {
             id: token_id,
             name: metadata.name,
@@ -176,8 +242,10 @@ export default function Page() {
           };
         })
       );
-
-      setNfts(metadataList);
+  
+      if (setResult) setResult(metadataList);
+  
+      return metadataList;
     } catch (err) {
       console.error("Erro ao buscar NFTs:", err);
     }
@@ -187,7 +255,11 @@ export default function Page() {
   useEffect(() => {
     if (account?.bech32Address && !fetchedNfts.current) {
       fetchedNfts.current = true;
-      getMyNfts();
+      getNftsByOwner({
+        contractAddr: nftContract,
+        ownerAddress: account.bech32Address,
+        setResult: setNfts,
+    });
     }
   }, [account]);
 
@@ -204,15 +276,45 @@ export default function Page() {
       {/* Se estiver conectado, mostra os botões de ação */}
       {account && (
         <>
-          <Button onClick={mintNft} disabled={loading}>
+          <Button onClick={() =>
+            mintNft({
+              contractAddr: nftContract,
+              tokenId,
+              owner: account.bech32Address,
+              tokenUri: metadataUri,
+              extension: {
+                store_id: "store_id",
+                original_owner: account.bech32Address,
+                expiration_date: "2023-12-31T23:59:59Z",
+                value: "100.00",
+                receipt_id: "receipt_id",
+                used: false,
+                token_uri: metadataUri,
+              },
+            })
+          } disabled={loading}>
             {loading ? "Mintando..." : "Mint NFT"}
           </Button>
 
-          <Button onClick={approveNft} disabled={loading}>
+          <Button onClick={() =>
+            approveNft({
+              tokenId,
+              owner: account.bech32Address,
+              spender: managerContract,
+              contractAddr: nftContract,
+            })
+          } disabled={loading}>
             {loading ? "Aprovando..." : "Approve NFT"}
           </Button>
 
-          <Button onClick={transferNft} disabled={loading}>
+          <Button onClick={() =>
+            transferNft({
+              tokenId,
+              currentOwner: account.bech32Address,
+              newOwner,
+              contractAddr: nftContract,
+            })
+          } disabled={loading}>
             {loading ? "Transferindo..." : "Transferir NFT"}
           </Button>
         </>
